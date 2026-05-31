@@ -1,15 +1,11 @@
 #!/bin/usr/ env 
+#!/bin/usr/ env 
 import re
 from collections import Counter
-
 #Read text file
-def read_text_file(filename):
-    try:
-        with open("News Article for Python Assessment.txt", "r", encoding="utf-8") as file:
-            return file.read()
-    except FileNotFoundError:
-        print("Error: File not found.")
-        return ""
+file_name = input("Enter the article file name: ")
+with open("News Article for Python Assessment.txt" , "r", encoding="utf-8") as file:
+    article_text = file.read()
    
 #Counting the number of times a specific Word
 def count_specific_word(text, search_word):
@@ -17,69 +13,131 @@ def count_specific_word(text, search_word):
     return words.count(search_word.lower())
 
 #Identify the most common word
-def identify_most_common_word(text):
-    if not text.strip():
-        return None
-    words = re.findall(r"\b\w+\b", text.lower())
 
-    if not words:
+def identify_most_common_word(text):
+
+    if text.strip() == "":
         return None
-    word_counts = Counter(words)
-    return word_counts.most_common(1)[0][0]
+
+    words = text.lower().split()
+
+    word_counts = {}
+
+    for word in words:
+        cleaned_word = word.strip(".,!?;:'\"()")
+
+        if cleaned_word in word_counts:
+            word_counts[cleaned_word] += 1
+        else:
+            word_counts[cleaned_word] = 1
+
+    most_common_word = ""
+    highest_count = 0
+
+    for word in word_counts:
+
+        if word_counts[word] > highest_count:
+            highest_count = word_counts[word]
+            most_common_word = word
+
+    return most_common_word
+
 
 #Calculate the average length of words
-def calculate_average_word_length(text):
-    words = re.findall(r"\b\w+\b", text)
 
-    if not words:
+def calculate_average_word_length(text):
+
+    words = text.split()
+
+    if len(words) == 0:
         return 0
-    total_length = sum(len(word) for word in words)
-    return total_length / len(words)
+
+    total_letters = 0
+
+    for word in words:
+        cleaned_word = word.strip(".,!?;:'\"()")
+        total_letters += len(cleaned_word)
+
+    average = total_letters / len(words)
+
+    return float(average)
 
 #Count the number of paragraphs
+
 def count_paragraphs(text):
-    if not text.strip():
+
+    if text.strip() == "":
         return 1
-    
-    paragraphs = [p for p in text.split("\n\n") if p.strip()]
-    return len(paragraphs)
+
+    paragraphs = text.split("\n\n")
+
+    count = 0
+
+    for paragraph in paragraphs:
+
+        if paragraph.strip() != "":
+            count += 1
+
+    return count
 
 #Counting the number of sentences in the text
 def count_sentences(text):
-    if not text.strip():
+
+    if text.strip() == "":
         return 1
-    sentences = re.split(r"[.!?]+", text)
-    sentences = [s for s in sentences if s.strip()]
-    return len(sentences)
 
-#Main program
-def main():
-    filename = input("Enter the news article file name: ")
-    text = read_text_file(filename)
+    count = 0
 
-    if text =="":
-        return
-    search_word = input("Enter the word you want to search: ")
-    print("\n--- TEXT ANALYSIS RESULTS ---")
-    word_count = count_specific_word(text, search_word)
-    print(f"Occurrences of '{search_word}': {word_count}")
-    common_word = identify_most_common_word(text)
-    print(f"Most common word: {common_word}")
+    for character in text:
 
-    average_length = calculate_average_word_length(text)
-    print(f"Average word length: {average_length:.2f}")
+        if character == ".":
+            count += 1
 
-    paragraph_count = count_paragraphs(text)
-    print(f"Number of paragraphs: {paragraph_count}")
+        elif character == "!":
+            count += 1
 
-    sentence_count = count_sentences(text)
-    print(f"Number of sentences: {sentence_count}")
-if __name__ == "__main__":
-    main()
+        elif character == "?":
+            count += 1
 
+    return count
+#Validating a search word
+search_word = ""
 
+while search_word == "":
+    search_word = input("Enter a word to search for: ")
 
+    if search_word == "":
+        print("Search word cannot be empty.")
+    else:
+        print("Searching article...")
 
+#Displaying results
+print("\n--- TEXT ANALYSIS RESULTS ---")
+print(
+    f"Occurrences of '{search_word}':",
+    count_specific_word(article_text, search_word)
+)
+
+print(
+    "Most Common Word:",
+    identify_most_common_word(article_text)
+)
+
+print(
+    "Average Word Length:",
+    calculate_average_word_length(article_text)
+)
+
+print(
+    "Number of Paragraphs:",
+    count_paragraphs(article_text)
+)
+
+print(
+    "Number of Sentences:",
+    count_sentences(article_text)
+
+)
 
 
 
