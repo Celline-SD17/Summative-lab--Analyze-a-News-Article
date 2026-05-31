@@ -88,7 +88,9 @@ def main():
     while search_word == "":
         search_word = input("Enter a word to search for: ")
         if search_word == "":
-            print("Search word cannot be empty.")
+            print("No search word provided")
+        else:
+            print("Searching article...")
             #Displaying results
     print("\n--- TEXT ANALYSIS RESULTS ---")
     print("Occurrences:", count_specific_word(article_text, search_word))
